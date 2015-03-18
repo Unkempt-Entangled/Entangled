@@ -9,7 +9,9 @@
 #import <UIKit/UIKit.h>
 
 @interface ViewController : UIViewController
-
+@property (weak, nonatomic) IBOutlet UITextField *registerName;
+@property (weak, nonatomic) IBOutlet UITextField *registerCode;
+@property (weak, nonatomic) IBOutlet UILabel *registerFieldsRequired;
 
 @end
 

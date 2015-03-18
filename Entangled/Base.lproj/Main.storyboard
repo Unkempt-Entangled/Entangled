@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6751" systemVersion="14C109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="vXZ-lx-hvc">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6751" systemVersion="14D105g" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="vXZ-lx-hvc">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6736"/>
     </dependencies>
@@ -39,11 +39,6 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="xjH-0E-UNM">
-                                <rect key="frame" x="32" y="258" width="218" height="30"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits"/>
-                            </textField>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sOH-K2-wV4">
                                 <rect key="frame" x="128" y="335" width="122" height="33"/>
                                 <color key="backgroundColor" red="0.65971977319999997" green="0.88397809699999996" blue="0.91230666039999997" alpha="1" colorSpace="calibratedRGB"/>
@@ -52,6 +47,9 @@
                                     <color key="titleColor" red="0.0030381944440000001" green="0.002768437514" blue="0.001314004206" alpha="1" colorSpace="calibratedRGB"/>
                                     <color key="titleShadowColor" red="0.58393006469999997" green="0.70148128330000004" blue="0.87290877529999999" alpha="1" colorSpace="calibratedRGB"/>
                                 </state>
+                                <connections>
+                                    <action selector="registerButtonPressed:" destination="vXZ-lx-hvc" eventType="touchDown" id="aMs-xw-Ps8"/>
+                                </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="*all fields required" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ADU-cv-3pZ">
                                 <rect key="frame" x="113" y="301" width="137" height="21"/>
@@ -59,9 +57,20 @@
                                 <color key="textColor" red="0.91631155303030298" green="0.076941374453877498" blue="0.095364324474214043" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="xjH-0E-UNM">
+                                <rect key="frame" x="32" y="258" width="218" height="30"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
+                    <connections>
+                        <outlet property="registerCode" destination="xjH-0E-UNM" id="qB7-Yi-Ibh"/>
+                        <outlet property="registerFieldsRequired" destination="ADU-cv-3pZ" id="bu7-zT-BGW"/>
+                        <outlet property="registerName" destination="e8R-PP-A5c" id="s5i-Af-zWf"/>
+                        <segue destination="TDG-yR-JqS" kind="show" identifier="showPhotoPage" id="7k0-4P-8RO"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>
             </objects>
