@@ -18,11 +18,22 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
     self.registerFieldsRequired.hidden = YES;
+    
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] 
+                                       initWithTarget:self
+                                       action:@selector(dismissKeyboard)];
+
+    [self.view addGestureRecognizer:tap];
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+-(void)dismissKeyboard {
+    [self.registerCode resignFirstResponder];
+    [self.registerName resignFirstResponder];
 }
 
 - (IBAction)registerButtonPressed:(id)sender {
