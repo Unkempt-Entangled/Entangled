@@ -9,18 +9,34 @@
 
 #import "PhotoViewController.h"
 
+
 @interface PhotoViewController ()
 
 @end
 
 @implementation PhotoViewController
 
+NSString* registerName;
+NSString* registerCode;
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
     self.captionRequiredLabel.hidden = YES;
     self.photoSuccess.hidden = YES;
-
+    
+    // Check the registration
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults synchronize];
+    
+    registerName = [defaults objectForKey:@"name"];
+    registerCode = [defaults objectForKey:@"code"];
+    
+    if (registerName == nil || registerCode == nil) {
+        // Switch to registration
+        UIViewController* rv = [[UIStoryboard storyboardWithName:@"MainStoryBoard" bundle:nil] instantiateViewControllerWithIdentifier:@"RegisterViewController"];
+        [self.navigationController pushViewController:rv animated:YES];
+    }
 }
 
 - (void)didReceiveMemoryWarning {
@@ -35,6 +51,8 @@
     }
     
     // Take a photo
+    
+    NSLog(registerName);
     
     self.photoSuccess.hidden = NO;
 }

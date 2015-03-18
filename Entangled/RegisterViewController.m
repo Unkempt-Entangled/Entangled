@@ -6,24 +6,43 @@
 //  Copyright (c) 2015 Unkempt. All rights reserved.
 //
 
-#import "ViewController.h"
+#import "RegisterViewController.h"
 
-@interface ViewController ()
+@interface RegisterViewController ()
 
 @end
 
-@implementation ViewController
+@implementation RegisterViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
+    
+    // Hidden labels
     self.registerFieldsRequired.hidden = YES;
     
+    
+    // Unfocus keyboards when tapping on screen
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] 
                                        initWithTarget:self
                                        action:@selector(dismissKeyboard)];
 
     [self.view addGestureRecognizer:tap];
+    
+    // Check the registration
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults synchronize];
+    NSString *name = [defaults objectForKey:@"name"];
+    NSString *code = [defaults objectForKey:@"code"];
+    
+    if (name != nil) {
+        self.registerName.text = name;
+    }
+    if (code != nil) {
+        self.registerCode.text = code;
+    }
+    
+    
 }
 
 - (void)didReceiveMemoryWarning {
@@ -45,9 +64,13 @@
         return;
     }
     
+    // Save the registration
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:name forKey:@"name"];
+    [defaults setObject:code forKey:@"code"];
+    [defaults synchronize];
+    
     [self performSegueWithIdentifier:@"showPhotoPage" sender:self];
-    
-    
     
 }
 
