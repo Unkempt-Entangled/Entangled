@@ -76,10 +76,10 @@
             </objects>
             <point key="canvasLocation" x="371" y="257"/>
         </scene>
-        <!--View Controller-->
+        <!--Photo View Controller-->
         <scene sceneID="o8Y-VX-zX4">
             <objects>
-                <viewController id="TDG-yR-JqS" sceneMemberID="viewController">
+                <viewController id="TDG-yR-JqS" customClass="PhotoViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="3tX-ez-CFP"/>
                         <viewControllerLayoutGuide type="bottom" id="tc5-Oj-Tjn"/>
@@ -88,12 +88,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="*caption required" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2MC-52-nlH">
-                                <rect key="frame" x="168" y="206" width="131" height="21"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" red="0.916311553" green="0.076941374450000002" blue="0.095364324469999998" alpha="1" colorSpace="calibratedRGB"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Cio-yU-DXV">
                                 <rect key="frame" x="178" y="238" width="122" height="33"/>
                                 <color key="backgroundColor" red="0.33478889355837588" green="0.68969538614235149" blue="0.91230666035353536" alpha="1" colorSpace="calibratedRGB"/>
@@ -102,6 +96,9 @@
                                     <color key="titleColor" red="0.0030381944444444198" green="0.0027684375135160035" blue="0.0013140042055090292" alpha="1" colorSpace="calibratedRGB"/>
                                     <color key="titleShadowColor" red="0.58393006472197229" green="0.7014812833213725" blue="0.8729087752525253" alpha="1" colorSpace="calibratedRGB"/>
                                 </state>
+                                <connections>
+                                    <action selector="photoGo:" destination="TDG-yR-JqS" eventType="touchUpInside" id="PFX-H8-oLy"/>
+                                </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Success! Photo Taken!" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BCW-Ik-eT5">
                                 <rect key="frame" x="109" y="284" width="191" height="21"/>
@@ -120,10 +117,21 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="*caption required" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2MC-52-nlH">
+                                <rect key="frame" x="168" y="206" width="131" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" red="0.916311553" green="0.076941374450000002" blue="0.095364324469999998" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <keyCommands/>
+                    <connections>
+                        <outlet property="captionField" destination="AZZ-b9-qOv" id="8XI-F0-J0d"/>
+                        <outlet property="captionRequiredLabel" destination="2MC-52-nlH" id="IeL-4I-Phh"/>
+                        <outlet property="photoSuccess" destination="BCW-Ik-eT5" id="OPD-lU-SCE"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="3gV-bj-h7n" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
