@@ -34,7 +34,7 @@ NSString* registerCode;
     
     if (registerName == nil || registerCode == nil) {
         // Switch to registration
-        UIViewController* rv = [[UIStoryboard storyboardWithName:@"MainStoryBoard" bundle:nil] instantiateViewControllerWithIdentifier:@"RegisterViewController"];
+        UIViewController* rv = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"RegisterViewController"];
         [self.navigationController pushViewController:rv animated:YES];
     }
 }
