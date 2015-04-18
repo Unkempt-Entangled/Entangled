@@ -8,6 +8,8 @@
 
 
 #import "PhotoViewController.h"
+#import "AppDelegate.h"
+#import <Parse/Parse.h>
 
 
 @interface PhotoViewController ()
@@ -20,7 +22,8 @@ NSString* registerName;
 NSString* registerCode;
 
 - (void)viewDidLoad {
-    [super viewDidLoad];
+    [super viewDidLoad
+     ];
     
     self.captionRequiredLabel.hidden = YES;
     self.photoSuccess.hidden = YES;
@@ -50,11 +53,27 @@ NSString* registerCode;
         return;
     }
     
-    // Take a photo
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    [appDelegate takePicture];
     
+    // Take a photo
     NSLog(registerName);
+    [self sendTakePictureNotificationWithCaption: caption];
     
     self.photoSuccess.hidden = NO;
+}
+
+- (void)sendTakePictureNotificationWithCaption:(NSString*)caption {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults synchronize];
+    registerName = [defaults objectForKey:@"name"];
+    registerCode = [defaults objectForKey:@"code"];
+    
+    NSDictionary *payload = @{ @"caption": caption };
+    PFPush *push = [[PFPush alloc] init];
+    [push setChannel: registerCode];
+    [push setData: payload];
+    [push sendPushInBackground];
 }
 
 @end

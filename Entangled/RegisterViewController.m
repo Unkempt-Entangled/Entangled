@@ -7,6 +7,7 @@
 //
 
 #import "RegisterViewController.h"
+#import <Parse/Parse.h>
 
 @interface RegisterViewController ()
 
@@ -69,6 +70,11 @@
     [defaults setObject:name forKey:@"name"];
     [defaults setObject:code forKey:@"code"];
     [defaults synchronize];
+    
+    // Register parse push channel using the inputed code
+    PFInstallation *currentInstallation = [PFInstallation currentInstallation];
+    [currentInstallation addUniqueObject:code forKey:@"channels"];
+    [currentInstallation saveInBackground];
     
     [self performSegueWithIdentifier:@"showPhotoPage" sender:self];
     
