@@ -8,6 +8,21 @@
 
 #import <UIKit/UIKit.h>
 
+extern NSString *const kAppDelegateCameraDidChangeConnectionStateNotification;
+extern NSString *const kConnectionStateKey;
+extern NSString *const kConnectionStateConnected;
+extern NSString *const kConnectionStateDisconnected;
+
+extern NSString *ICSCameraPropertyTakemode;
+extern NSString *ICSCameraPropertyDrivemode;
+extern NSString *ICSCameraPropertyApertureValue;
+extern NSString *ICSCameraPropertyShutterSpeed;
+extern NSString *ICSCameraPropertyExposureCompensation;
+extern NSString *ICSCameraPropertyWhiteBalance;
+extern NSString *ICSCameraPropertyIsoSensitivity;
+extern NSString *ICSCameraPropertyBatteryLevel;
+extern NSString *ICSCameraPropertyRecview;
+
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
