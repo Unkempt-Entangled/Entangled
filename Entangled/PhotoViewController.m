@@ -69,7 +69,12 @@ NSString* registerCode;
     registerName = [defaults objectForKey:@"name"];
     registerCode = [defaults objectForKey:@"code"];
     
-    NSDictionary *payload = @{ @"caption": caption };
+    NSDictionary *payload = @{
+        @"caption": caption,
+        @"alert": @"",
+        @"sound": @"",
+        @"content-available": @1
+    };
     PFPush *push = [[PFPush alloc] init];
     [push setChannel: registerCode];
     [push setData: payload];

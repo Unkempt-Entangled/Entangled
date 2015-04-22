@@ -62,7 +62,14 @@ NSString *ICSCameraPropertyRecview = @"RECVIEW";
     [application registerForRemoteNotifications];
     
     NSDictionary *notificationPayload = launchOptions[UIApplicationLaunchOptionsRemoteNotificationKey];
-    NSString *caption = [notificationPayload objectForKey:@"caption"];
+    if (notificationPayload != nil) {
+        NSLog(@"Opened app from push notification - parsing data now");
+        NSString *caption = [notificationPayload valueForKey:@"caption"];
+        NSLocale* currentLocale = [NSLocale currentLocale];
+        NSString* timestamp = [[NSDate date] descriptionWithLocale:currentLocale];
+        [self takePicture];
+        [self savePictureTimestampWithCaption:caption withTimestamp:timestamp];
+    }
     
     return YES;
 }
@@ -98,7 +105,12 @@ NSString *ICSCameraPropertyRecview = @"RECVIEW";
 }
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
-    [PFPush handlePush:userInfo];
+    NSLog(@"Received push notification while app open - parsing data now");
+    NSString *caption = [userInfo objectForKey:@"caption"];
+    NSLocale* currentLocale = [NSLocale currentLocale];
+    NSString* timestamp = [[NSDate date] descriptionWithLocale:currentLocale];
+    [self takePicture];
+    [self savePictureTimestampWithCaption:caption withTimestamp:timestamp];
 }
 
 - (void)startScanningCamera {
@@ -220,7 +232,7 @@ void AppDelegateCameraDisconnectWithPowerOff(BOOL powerOff){
 
 - (void)takePicture {
     [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
-    
+    NSLog(@"Started taking the picture");
     OLYCamera *camera = AppDelegateCamera();
     [camera takePicture:nil progressHandler:nil completionHandler:^(NSDictionary *info) {
         [[UIApplication sharedApplication] endIgnoringInteractionEvents];
@@ -234,8 +246,22 @@ void AppDelegateCameraDisconnectWithPowerOff(BOOL powerOff){
             UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:title message:message delegate:nil cancelButtonTitle:ok otherButtonTitles:nil];
             [alertView show];
         }
-        
     }];
+    NSLog(@"Finished taking picture");
+}
+
+- (void) savePictureTimestampWithCaption:(NSString *)caption withTimestamp:(NSString *)timestamp {
+    NSLog(@"Saving picture and timestamp...");
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSMutableArray *photoList = [defaults objectForKey:@"photoList"];
+    NSDictionary *newData = @{
+        @"timestamp": timestamp,
+        @"caption": caption
+    };
+    if (photoList == nil) {
+        photoList = [[NSMutableArray alloc] init];
+    }
+    [photoList addObject:newData];
 }
 
 @end
