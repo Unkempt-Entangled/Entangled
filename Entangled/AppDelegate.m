@@ -26,7 +26,7 @@ NSString *ICSCameraPropertyIsoSensitivity = @"ISO";
 NSString *ICSCameraPropertyBatteryLevel = @"BATTERY_LEVEL";
 NSString *ICSCameraPropertyRecview = @"RECVIEW";
 
-@interface AppDelegate () <OLYCameraConnectionDelegate>
+@interface AppDelegate () //<OLYCameraConnectionDelegate>
 
 @property (strong, nonatomic) dispatch_queue_t connectionQueue;
 @property (strong, nonatomic) OLYCamera *camera;
@@ -37,8 +37,28 @@ NSString *ICSCameraPropertyRecview = @"RECVIEW";
 
 @implementation AppDelegate
 
++ (void)initialize {
+    if ([self class] != [AppDelegate class]) {
+        return;
+    }
+    NSDictionary *userDefaults = @{@"live_preview_quality": NSStringFromCGSize(OLYCameraLiveViewSizeQVGA),
+                                   ICSCameraPropertyTakemode: @"<TAKEMODE/iAuto>",
+                                   ICSCameraPropertyDrivemode: @"<TAKE_DRIVE/DRIVE_NORMAL>",
+                                   ICSCameraPropertyRecview: @"<RECVIEW/ON>"};
+    [[NSUserDefaults standardUserDefaults] registerDefaults:userDefaults];
+}
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    // Set up camera connection
+//    _camera = [[OLYCamera alloc] init];
+//    [_camera setConnectionDelegate:self];
+    
+    _connectionQueue = dispatch_queue_create([NSString stringWithFormat:@"%@.queue", [NSBundle mainBundle].bundleIdentifier].UTF8String, DISPATCH_QUEUE_SERIAL);
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didChangeNetworkReachability:) name:kReachabilityChangedNotification object:nil];
+    _reachabilityForLocalWiFi = [Reachability reachabilityForLocalWiFi];
+    
+    
     // Override point for customization after application launch.
     [Parse setApplicationId:@"98pAYwnjCzzuqAl8ZC7YIIGMHjEnjpIbvU7Hf1nZ"
                   clientKey:@"mx4Bjfy6vSpiBQ5GfkGmcwN4jX2ykRV7fmZhuziZ"];
@@ -50,13 +70,6 @@ NSString *ICSCameraPropertyRecview = @"RECVIEW";
     UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:userNotificationTypes
                                                                              categories:nil];
     
-    // Set up camera connection
-    _camera = [[OLYCamera alloc] init];
-    [_camera setConnectionDelegate:self];
-    _connectionQueue = dispatch_queue_create([NSString stringWithFormat:@"%@.queue", [NSBundle mainBundle].bundleIdentifier].UTF8String, DISPATCH_QUEUE_SERIAL);
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didChangeNetworkReachability:) name:kReachabilityChangedNotification object:nil];
-    _reachabilityForLocalWiFi = [Reachability reachabilityForLocalWiFi];
-    
     // Set up parse connection
     [application registerUserNotificationSettings:settings];
     [application registerForRemoteNotifications];
@@ -67,6 +80,7 @@ NSString *ICSCameraPropertyRecview = @"RECVIEW";
         NSString *caption = [notificationPayload valueForKey:@"caption"];
         NSLocale* currentLocale = [NSLocale currentLocale];
         NSString* timestamp = [[NSDate date] descriptionWithLocale:currentLocale];
+        
         [self takePicture];
         [self savePictureTimestampWithCaption:caption withTimestamp:timestamp];
     }
@@ -109,6 +123,7 @@ NSString *ICSCameraPropertyRecview = @"RECVIEW";
     NSString *caption = [userInfo objectForKey:@"caption"];
     NSLocale* currentLocale = [NSLocale currentLocale];
     NSString* timestamp = [[NSDate date] descriptionWithLocale:currentLocale];
+    
     [self takePicture];
     [self savePictureTimestampWithCaption:caption withTimestamp:timestamp];
 }
@@ -215,21 +230,6 @@ NSString *ICSCameraPropertyRecview = @"RECVIEW";
     });
 }
 
-OLYCamera *AppDelegateCamera() {
-    AppDelegate *delegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    if (!delegate) {
-        return nil;
-    }
-    return delegate.camera;
-}
-
-void AppDelegateCameraDisconnectWithPowerOff(BOOL powerOff){
-    dispatch_async(dispatch_get_main_queue(), ^{
-        AppDelegate *delegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-        [delegate disconnectWithPowerOff:powerOff];
-    });
-}
-
 - (void)takePicture {
     [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
     NSLog(@"Started taking the picture");
@@ -238,7 +238,7 @@ void AppDelegateCameraDisconnectWithPowerOff(BOOL powerOff){
         [[UIApplication sharedApplication] endIgnoringInteractionEvents];
     } errorHandler:^(NSError *error) {
         [[UIApplication sharedApplication] endIgnoringInteractionEvents];
-
+        
         if (error.domain != OLYCameraErrorDomain || error.code != OLYCameraErrorFocusFailed) {
             NSString *title = NSLocalizedString(@"Take failed", nil);
             NSString *message = error.localizedDescription;
@@ -255,13 +255,49 @@ void AppDelegateCameraDisconnectWithPowerOff(BOOL powerOff){
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSMutableArray *photoList = [defaults objectForKey:@"photoList"];
     NSDictionary *newData = @{
-        @"timestamp": timestamp,
-        @"caption": caption
-    };
+                              @"timestamp": timestamp,
+                              @"caption": caption
+                              };
     if (photoList == nil) {
         photoList = [[NSMutableArray alloc] init];
     }
     [photoList addObject:newData];
 }
 
+#pragma mark - Reachabiliry
+
+- (void)didChangeNetworkReachability:(Reachability *)noteObject
+{
+    NetworkStatus status = self.reachabilityForLocalWiFi.currentReachabilityStatus;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (status == ReachableViaWiFi) {
+            [self startConnectingToCamera];
+        }
+    });
+}
+
+//#pragma mark - OLYCameraConnectionDelegate
+//
+//- (void)camera:(OLYCamera *)camera disconnectedByError:(NSError *)error
+//{
+//    dispatch_async(dispatch_get_main_queue(), ^{
+//        [[NSNotificationCenter defaultCenter] postNotificationName:kAppDelegateCameraDidChangeConnectionStateNotification object:self userInfo:@{kConnectionStateKey: kConnectionStateDisconnected}];
+//    });
+//}
+
 @end
+
+OLYCamera *AppDelegateCamera() {
+    AppDelegate *delegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    if (!delegate) {
+        return nil;
+    }
+    return delegate.camera;
+}
+
+void AppDelegateCameraDisconnectWithPowerOff(BOOL powerOff){
+    dispatch_async(dispatch_get_main_queue(), ^{
+        AppDelegate *delegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+        [delegate disconnectWithPowerOff:powerOff];
+    });
+}

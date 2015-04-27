@@ -7,6 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <OLYCameraKit/OLYCamera.h>
+#import <OLYCameraKit/OLYCameraError.h>
 
 extern NSString *const kAppDelegateCameraDidChangeConnectionStateNotification;
 extern NSString *const kConnectionStateKey;
@@ -31,3 +33,5 @@ extern NSString *ICSCameraPropertyRecview;
 
 @end
 
+extern OLYCamera *AppDelegateCamera();
+extern void AppDelegateCameraDisconnectWithPowerOff(BOOL powerOff);
