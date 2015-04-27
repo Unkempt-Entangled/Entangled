@@ -81,4 +81,9 @@ NSString* registerCode;
     [push sendPushInBackground];
 }
 
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
 @end
