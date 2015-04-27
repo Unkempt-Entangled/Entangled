@@ -58,7 +58,18 @@ NSString* registerCode;
     }
     
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    [appDelegate takePicture];
+    
+    OLYCamera *camera = AppDelegateCamera();
+    OLYCameraActionType actionType = [camera actionType];
+    if (camera.takingPicture) {
+        return;
+    }
+    
+    if (actionType == OLYCameraActionTypeSingle ||
+        actionType == OLYCameraActionTypeSequential) {
+        NSLog(@"Call takePicture");
+        [appDelegate takePicture];
+    }
     
     // Take a photo
     NSLog([NSString stringWithFormat:@"%@", registerName]);

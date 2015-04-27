@@ -9,7 +9,6 @@
 #import "AppDelegate.h"
 #import "Reachability.h"
 #import <Parse/Parse.h>
-#import <OLYCameraKit/OLYCamera.h>
 
 NSString *const kAppDelegateCameraDidChangeConnectionStateNotification = @"kAppDelegateCameraDidChangeConnectionStateNotification";
 NSString *const kConnectionStateKey = @"state";
@@ -26,7 +25,7 @@ NSString *ICSCameraPropertyIsoSensitivity = @"ISO";
 NSString *ICSCameraPropertyBatteryLevel = @"BATTERY_LEVEL";
 NSString *ICSCameraPropertyRecview = @"RECVIEW";
 
-@interface AppDelegate () //<OLYCameraConnectionDelegate>
+@interface AppDelegate () <OLYCameraLiveViewDelegate, OLYCameraConnectionDelegate>
 
 @property (strong, nonatomic) dispatch_queue_t connectionQueue;
 @property (strong, nonatomic) OLYCamera *camera;
@@ -50,8 +49,8 @@ NSString *ICSCameraPropertyRecview = @"RECVIEW";
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Set up camera connection
-//    _camera = [[OLYCamera alloc] init];
-//    [_camera setConnectionDelegate:self];
+    _camera = [[OLYCamera alloc] init];
+    [_camera setConnectionDelegate:self];
     
     _connectionQueue = dispatch_queue_create([NSString stringWithFormat:@"%@.queue", [NSBundle mainBundle].bundleIdentifier].UTF8String, DISPATCH_QUEUE_SERIAL);
     
@@ -232,9 +231,17 @@ NSString *ICSCameraPropertyRecview = @"RECVIEW";
 
 - (void)takePicture {
     [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
+//    __weak AppDelegate *weakSelf = self;
     NSLog(@"Started taking the picture");
     OLYCamera *camera = AppDelegateCamera();
-    [camera takePicture:nil progressHandler:nil completionHandler:^(NSDictionary *info) {
+    [camera takePicture:nil progressHandler:^(OLYCameraTakingProgress progress, NSDictionary *info) {
+        if (progress == OLYCameraTakingProgressEndFocusing) {
+            NSLog(@"OLYCameraTakingProgressEndFocusing");
+        }
+        if (progress == OLYCameraTakingProgressBeginCapturing) {
+            NSLog(@"starting image capture");
+        }
+    } completionHandler:^(NSDictionary *info) {
         [[UIApplication sharedApplication] endIgnoringInteractionEvents];
     } errorHandler:^(NSError *error) {
         [[UIApplication sharedApplication] endIgnoringInteractionEvents];
