@@ -57,7 +57,7 @@ NSString* registerCode;
     [appDelegate takePicture];
     
     // Take a photo
-    NSLog(registerName);
+    NSLog([NSString stringWithFormat:@"%@", registerName]);
     [self sendTakePictureNotificationWithCaption: caption];
     
     self.photoSuccess.hidden = NO;
